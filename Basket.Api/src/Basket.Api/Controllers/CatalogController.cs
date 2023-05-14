@@ -1,24 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Basket.Api.Repositories;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Basket.Api.Controllers;
 
 [ApiController]
 [Route("api/catalog")]
-public class CatalogController
+public class CatalogController : ControllerBase
 {
     private readonly ILogger<CatalogController> _logger;
-
-    public CatalogController(ILogger<CatalogController> logger)
+    private readonly ICatalogRepository _catalogRepository;
+    public CatalogController(ILogger<CatalogController> logger, ICatalogRepository catalogRepository)
     {
         _logger = logger;
+        _catalogRepository = catalogRepository;
     }
 
     [HttpGet("products")]
     [ProducesResponseType(typeof(PageWithTotalModel<ProductModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> GetProducts(int? skip, int? take, CancellationToken ct)
+    public async Task<IActionResult> GetProducts(int? skip, int? take, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        if (take > 1000)
+        {
+            return BadRequest();
+        }
+
+        var result =  await _catalogRepository.GetProductsAsync(skip, take, ct);
+        return Ok(result);
     }
     
     [HttpGet("products/top-ranked")]
@@ -36,11 +45,4 @@ public class CatalogController
     {
         throw new NotImplementedException();
     }
-}
-
-
-public class ProductModel
-{
-    public long Id { get; set; }
-    
 }
