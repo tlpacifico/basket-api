@@ -23,5 +23,24 @@ public class CatalogControllerTests : IClassFixture<ApiFactory>
 
         result.EnsureSuccessStatusCode();
     }
+    
+    [Fact]
+    public async void Get_Top_Ranked_Products()
+    {
+        var endpoint = $"{api}/products/top-ranked";
+        var result = await _client.GetAsync(endpoint);
+
+        result.EnsureSuccessStatusCode();
+    }
+    
+    
+    [Fact]
+    public async void Get_Cheapest_Products()
+    {
+        var endpoint = $"{api}/products/cheapest";
+        var result = await _client.GetAsync(endpoint);
+
+        result.EnsureSuccessStatusCode();
+    }
 
 }
