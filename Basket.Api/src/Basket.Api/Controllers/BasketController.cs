@@ -13,7 +13,7 @@ public class BasketController : ControllerBase
         _logger = logger;
     }
     
-    [HttpPost("create/{email:string}")]
+    [HttpPost("create/{email}")]
     [ProducesResponseType(typeof(BasketModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public Task<IActionResult> CreateAsync(

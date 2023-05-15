@@ -1,18 +1,16 @@
 using System.Net.Http.Headers;
+using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Basket.Api.Integration;
 
 public class ProtectedApiBearerTokenHandler : DelegatingHandler
 {
-    private readonly ICatalogIntegration _client;
     private readonly IMemoryCache _memoryCache;
 
     public ProtectedApiBearerTokenHandler(
-        ICatalogIntegration client,
         IMemoryCache memoryCache)
     {
-        _client = client;
         _memoryCache = memoryCache;
     }
 
@@ -24,14 +22,20 @@ public class ProtectedApiBearerTokenHandler : DelegatingHandler
         var accessToken = await _memoryCache.GetOrCreateAsync(key, async entry =>
         {
             // request the access token
-            var accessToken = await _client.GetTokenAsync(ct);
+            var client = new HttpClient()
+            {
+                BaseAddress = new Uri("https://azfun-impact-code-challenge-api.azurewebsites.net/api/")
+            };
+            var response = await client.PostAsJsonAsync("login",
+                new RequestTokenModel() { Email = "thacio.pacifico@gmail.com" });
 
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(50);
+            var model = JsonSerializer.Deserialize<TokenModel>(await response.Content.ReadAsStringAsync());
 
-            return accessToken;
+            return model;
         });
         // set the bearer token to the outgoing request
-        request.Headers.Authorization = new AuthenticationHeaderValue("bearer", accessToken.Token);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Token);
         return await base.SendAsync(request, ct);
     }
 }

@@ -1,15 +1,16 @@
-﻿using Basket.Api.Controllers;
+﻿using System.Text.Json.Serialization;
+using Basket.Api.Controllers;
 
 namespace Basket.Api.Integration;
 
 public interface ICatalogIntegration
 {
     public Task<IReadOnlyCollection<ProductModel>> ProductAllAsync(CancellationToken ct);
-    public Task<TokenModel> GetTokenAsync(CancellationToken ct);
 }
 
 public class TokenModel
 {
+    [JsonPropertyName("token")]
     public string Token { get; set; }
 }
 

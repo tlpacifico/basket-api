@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Basket.Api.Controllers;
 
 namespace Basket.Api.Integration;
@@ -16,13 +15,5 @@ public class CatalogIntegration : ICatalogIntegration
     {
         var response = await _httpClient.GetFromJsonAsync<IReadOnlyCollection<ProductModel>>("GetAllProducts", ct);
         return response;
-    }
-
-    public async Task<TokenModel> GetTokenAsync(CancellationToken ct)
-    {
-        var email = "thacio.pacifico@gmail.com";
-        var response = await _httpClient.PostAsJsonAsync("Login", new RequestTokenModel() { Email = email }, ct);
-        var token = JsonSerializer.Deserialize<TokenModel>(await response.Content.ReadAsStringAsync());
-        return token;
     }
 }
