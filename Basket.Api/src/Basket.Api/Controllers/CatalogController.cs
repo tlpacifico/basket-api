@@ -1,5 +1,4 @@
 ﻿using Basket.Api.Repositories;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Basket.Api.Controllers;
