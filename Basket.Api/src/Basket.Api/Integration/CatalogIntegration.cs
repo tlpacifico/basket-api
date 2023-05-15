@@ -18,6 +18,7 @@ public class CatalogIntegration : ICatalogIntegration
         {
             return _products;
         }
+        //TODO: check is http code is 200
         _products = await _httpClient.GetFromJsonAsync<IReadOnlyCollection<ProductModel>>("GetAllProducts", ct);
       
         return _products;

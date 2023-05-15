@@ -26,10 +26,12 @@ public class ProtectedApiBearerTokenHandler : DelegatingHandler
             {
                 BaseAddress = new Uri("https://azfun-impact-code-challenge-api.azurewebsites.net/api/")
             };
+            //TODO: check is http code is 200
             var response = await client.PostAsJsonAsync("login",
                 new RequestTokenModel() { Email = "thacio.pacifico@gmail.com" });
 
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(50);
+           
             var model = JsonSerializer.Deserialize<TokenModel>(await response.Content.ReadAsStringAsync());
 
             return model;

@@ -5,24 +5,26 @@ namespace Basket.Api.Repositories;
 public class BasketRepository : IBasketRepository
 {
     private List<BasketModel> _baskets;
+
     public BasketRepository()
     {
         _baskets = new List<BasketModel>();
     }
+
     public BasketModel Create(string email, CreateBasketModel model)
     {
         var hasBasket = _baskets.FirstOrDefault(d => d.Email.ToUpper() == email.ToUpper());
 
         if (hasBasket is not null)
             return hasBasket;
-
+        //TODO: check is product exists in the catalog
         var createdBasket = new BasketModel()
         {
             Id = Guid.NewGuid(),
             Email = email,
             Products = model.Products.ToList()
         };
-        
+
         _baskets.Add(createdBasket);
         return createdBasket;
     }
@@ -37,10 +39,10 @@ public class BasketRepository : IBasketRepository
         var basket = Get(id);
         if (basket is null)
             return basket;
-
+        
+        //TODO: check is product exists in the catalog
         basket.Products.Add(product);
         return basket;
-
     }
 
     public BasketModel? RemoveProduct(Guid id, ProductModel product)
@@ -57,6 +59,5 @@ public class BasketRepository : IBasketRepository
         }
 
         return basket;
-
     }
 }
