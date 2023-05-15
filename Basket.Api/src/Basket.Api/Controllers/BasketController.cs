@@ -1,3 +1,4 @@
+using Basket.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Basket.Api.Controllers;
@@ -7,76 +8,75 @@ namespace Basket.Api.Controllers;
 public class BasketController : ControllerBase
 {
     private readonly ILogger<BasketController> _logger;
+    private readonly IBasketRepository _basketRepository;
 
-    public BasketController(ILogger<BasketController> logger)
+    public BasketController(ILogger<BasketController> logger, IBasketRepository basketRepository)
     {
         _logger = logger;
+        _basketRepository = basketRepository;
     }
-    
+
     [HttpPost("create/{email}")]
     [ProducesResponseType(typeof(BasketModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> CreateAsync(
+    public IActionResult CreateAsync(
         [FromRoute] string email,
-        [FromBody] CreateBasketModel createBasketModel,
-        CancellationToken ct)
+        [FromBody] CreateBasketModel createBasketModel)
     {
-        throw new NotImplementedException();
+        var basket = _basketRepository.Create(email, createBasketModel);
+        _logger.LogInformation("Creating baskted");
+        return Ok(basket);
     }
-    
+
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(BasketModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public Task<IActionResult> GetAsync(
+    public IActionResult GetAsync(
         [FromRoute] Guid id,
         CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var basket = _basketRepository.Get(id);
+        if (basket is null) return NotFound();
+
+        return Ok(basket);
     }
-    
+
     [HttpPut("{id:guid}/add-product")]
     [ProducesResponseType(typeof(BasketModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public Task<IActionResult> AddProductAsync(
+    public IActionResult AddProductAsync(
         [FromRoute] Guid id,
-        [FromBody] AddProductModel addProductModel,
+        [FromBody] ProductModel addProductModel,
         CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var basket = _basketRepository.AddProduct(id, addProductModel);
+        if (basket is null) return NotFound();
+
+        return Ok(basket);
     }
-    
+
     [HttpPut("{id:guid}/remove-product")]
     [ProducesResponseType(typeof(BasketModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public Task<IActionResult> RemoveProductAsync(
+    public IActionResult RemoveProductAsync(
         [FromRoute] Guid id,
-        [FromBody] RemoveProductModel removeProductModel,
+        [FromBody] ProductModel removeProductModel,
         CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var basket = _basketRepository.RemoveProduct(id, removeProductModel);
+        if (basket is null) return NotFound();
+
+        return Ok(basket);
     }
 }
 
 public class BasketModel
 {
-    
+    public Guid Id { get; set; }
+    public string Email { get; set; }
+    public List<ProductModel> Products { get; set; }
 }
-
 
 public class CreateBasketModel
 {
-    
-}
-
-public class AddProductModel
-{
-    
-}
-
-public class RemoveProductModel
-{
-    
+    public IReadOnlyCollection<ProductModel> Products { get; set; }
 }

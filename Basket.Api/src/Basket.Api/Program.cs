@@ -15,6 +15,7 @@ public partial class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddSingleton<ICatalogRepository, CatalogRepository>();
+        builder.Services.AddSingleton<IBasketRepository, BasketRepository>();
         builder.Services.AddTransient<ProtectedApiBearerTokenHandler>();
         builder.Services.AddHttpClient<ICatalogIntegration, CatalogIntegration>((_, client) =>
         {
