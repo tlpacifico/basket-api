@@ -33,16 +33,16 @@ public class CatalogController : ControllerBase
     [HttpGet("products/top-ranked")]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProductModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> GetTopTankedProductsAsync(CancellationToken ct)
+    public async Task<IActionResult> GetTopTankedProductsAsync(CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return Ok(await _catalogRepository.GetTopRankedProductAsync(ct));
     }
     
     [HttpGet("products/cheapest")]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProductModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> GetCheapestProductsAsync(CancellationToken ct)
+    public async Task<IActionResult> GetCheapestProductsAsync(CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return Ok(await _catalogRepository.GetCheapestProductAsync(ct));
     }
 }
