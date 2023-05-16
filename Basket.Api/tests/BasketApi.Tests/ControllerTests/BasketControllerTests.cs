@@ -33,12 +33,9 @@ public class BasketControllerTests : IClassFixture<ApiFactory>
                 }
             }
         };
-        var x = JsonSerializer.Serialize(basket, new JsonSerializerOptions()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        });
-        var result = await _client.PostAsJsonAsync(endpoint, x);
+        var result = await _client.PostAsJsonAsync(endpoint, basket);
 
+        var r = await result.Content.ReadAsStringAsync();
         result.EnsureSuccessStatusCode();
     }
 }

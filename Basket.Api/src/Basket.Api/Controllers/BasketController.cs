@@ -23,7 +23,7 @@ public class BasketController : ControllerBase
         [FromBody] CreateBasketModel createBasketModel)
     {
         var basket = _basketRepository.Create(email, createBasketModel);
-        _logger.LogInformation("Creating baskted");
+        _logger.LogInformation("Creating basket");
         return Ok(basket);
     }
 
