@@ -5,7 +5,7 @@ namespace Basket.Api.Integration;
 
 public interface ICatalogIntegration
 {
-    public Task<IReadOnlyCollection<ProductModel>> ProductAllAsync(CancellationToken ct);
+    public Task<IReadOnlyCollection<ProductModel>> ProductAllAsync();
 }
 
 public class TokenModel

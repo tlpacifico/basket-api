@@ -5,22 +5,25 @@ namespace Basket.Api.Integration;
 public class CatalogIntegration : ICatalogIntegration
 {
     private readonly HttpClient _httpClient;
-    private IReadOnlyCollection<ProductModel> _products;
+    private Lazy<ValueTask<IReadOnlyCollection<ProductModel>>> _products;
+    
     public CatalogIntegration(HttpClient httpClient)
     {
-        _products = new List<ProductModel>();
+        _products = new(LoadProducts);
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
 
-    public async Task<IReadOnlyCollection<ProductModel>> ProductAllAsync(CancellationToken ct)
+    private async ValueTask<IReadOnlyCollection<ProductModel>> LoadProducts()
     {
-        if (_products.Count > 0)
-        {
-            return _products;
-        }
         //TODO: check is http code is 200
-        _products = await _httpClient.GetFromJsonAsync<IReadOnlyCollection<ProductModel>>("GetAllProducts", ct);
+        var products = await _httpClient
+            .GetFromJsonAsync<IReadOnlyCollection<ProductModel>>("GetAllProducts");
       
-        return _products;
+        return products;
+    }
+
+    public async Task<IReadOnlyCollection<ProductModel>> ProductAllAsync()
+    {
+        return await _products.Value;
     }
 }
